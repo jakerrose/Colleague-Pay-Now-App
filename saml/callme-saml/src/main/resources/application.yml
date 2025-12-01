@@ -1,0 +1,73 @@
+server:
+  port: 7171
+  ssl:
+    enabled: true
+    key-store: classpath:mycert.pfx
+    key-store-password: yourpassword
+    key-store-type: PKCS12
+  servlet:
+    session:
+      persistent: false
+      cookie:
+        same-site: Lax
+        persistent: false
+
+#sso (keycloak) configuration:
+spring:
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          keycloak:
+            identityprovider:
+              entity-id: https://localhost:7171/saml2/service-provider-metadata/keycloak
+              verification.credentials:
+                - certificate-location: classpath:keycloak.crt
+              singlesignon.url: https://localhost:6771/realms/Test2/protocol/saml
+            signing:
+              credentials:
+                - private-key-location: classpath:rp-key1.key
+                  certificate-location: classpath:rp-cert.crt
+            assertingparty:
+              metadata-uri: https://localhost:6771/realms/Test2/protocol/saml/descriptor
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+logging:
+  level:
+    pl.paynowapp.samples: DEBUG
+    org:
+      springframework:
+        security: TRACE
+        security.saml2: DEBUG
+        security.saml2.provider.service.authentication: DEBUG
+        security.saml2.provider.service.OpenSaml4AuthenticationProvider: DEBUG
+        security.web.csrf: TRACE
+        security.web: DEBUG
+        context.annotation: DEBUG
+
+#flywire:
+flywire:
+  mode: sandbox  # sandbox or production
+
+api:
+  secret: 
+  public-key: 
+  endpoint: https://api-platform-sandbox.flywire.com/
+
+#currency:
+app:
+  language: en
+  country-code: US
+
+#proxy options:
+proxy:
+  enabled: false     # set to false to disable proxy
+  host: 172.191.80.152
+  port: 3128
+
+Colleague:
+  address-type: other
+  email-type: other
+  phone-type: other
+  name-type: legal # e.g personal, legal, etc.
